@@ -3,385 +3,681 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NOVA 2.0 Agent Dashboard & Advanced To-Do App</title>
+  <title>⚡ NOVA 2.0 // ULTRA CYBER OVERLOAD ⚡</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
     :root {
-      --bg-color: #0d1117;
-      --card-bg: #161b22;
-      --border-color: #30363d;
-      --text-color: #c9d1d9;
-      --accent-color: #58a6ff;
-      --success-color: #238636;
-      --danger-color: #da3633;
-      --warning-color: #d29922;
+      --bg-color: #020208;
+      --card-bg: rgba(8, 12, 28, 0.85);
+      --border-cyan: #00f0ff;
+      --border-pink: #ff0055;
+      --neon-yellow: #ffe600;
+      --neon-green: #00ff66;
+      --neon-purple: #b000ff;
+      --text-main: #00f0ff;
     }
+
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: 'Share Tech Mono', monospace;
       background-color: var(--bg-color);
-      color: var(--text-color);
+      color: var(--text-main);
+      overflow-x: hidden;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      user-select: none;
     }
+
+    /* CRT Scanline & Glitch Overlay */
+    .scanlines {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+      background-size: 100% 3px, 6px 100%;
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* Screen Flash Effect */
+    #screen-flash {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: radial-gradient(circle, rgba(0,255,204,0.8) 0%, rgba(255,0,85,0.4) 100%);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 100;
+      transition: opacity 0.05s ease-out;
+    }
+
+    #bg-canvas, #fireworks-canvas {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+    }
+
     header {
-      background-color: var(--card-bg);
-      border-bottom: 1px solid var(--border-color);
+      background: rgba(4, 6, 18, 0.9);
+      border-bottom: 3px solid var(--border-pink);
+      box-shadow: 0 0 30px var(--border-pink), inset 0 0 15px var(--border-cyan);
       padding: 1rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
     }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: var(--accent-color);
+
+    /* Glitch Title Animation */
+    .glitch-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 3px 3px var(--border-pink), -3px -3px var(--border-cyan);
+      animation: glitch 1.5s infinite alternate;
+      letter-spacing: 3px;
     }
-    .status-badge {
-      background-color: var(--success-color);
-      color: white;
-      padding: 0.25rem 0.75rem;
-      border-radius: 12px;
-      font-size: 0.85rem;
+
+    @keyframes glitch {
+      0% { text-shadow: 3px 3px var(--border-pink), -3px -3px var(--border-cyan); }
+      25% { text-shadow: -3px 3px var(--border-pink), 3px -3px var(--border-cyan); }
+      50% { text-shadow: 3px -3px var(--border-pink), -3px 3px var(--border-cyan); }
+      100% { text-shadow: -2px -2px var(--border-pink), 2px 2px var(--border-cyan); }
     }
+
+    .hud-meters {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .hud-box {
+      background: rgba(0, 240, 255, 0.08);
+      border: 2px solid var(--border-cyan);
+      box-shadow: 0 0 15px var(--border-cyan);
+      padding: 0.5rem 1.2rem;
+      border-radius: 4px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.9rem;
+      color: var(--neon-yellow);
+      text-shadow: 0 0 8px var(--neon-yellow);
+    }
+
     main {
       padding: 2rem;
-      max-width: 1100px;
+      max-width: 1300px;
       margin: 0 auto;
       width: 100%;
-      box-sizing: border-box;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 2rem;
+      z-index: 10;
     }
-    @media (max-width: 768px) {
-      main {
-        grid-template-columns: 1fr;
-      }
+
+    @media (max-width: 950px) { main { grid-template-columns: 1fr; } }
+
+    /* Holographic 3D Tilt Card */
+    .cyber-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border-cyan);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.25), inset 0 0 20px rgba(0, 240, 255, 0.1);
+      border-radius: 10px;
+      padding: 1.8rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 1.5rem;
+
+    .cyber-card::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(0,240,255,0.1), transparent);
+      transform: rotate(45deg);
+      animation: shine 6s infinite linear;
+      pointer-events: none;
     }
-    .card h2 {
+
+    @keyframes shine { 0% { transform: translate(-50%, -50%) rotate(45deg); } 100% { transform: translate(50%, 50%) rotate(45deg); } }
+
+    .cyber-card h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.4rem;
+      color: var(--border-pink);
+      text-shadow: 0 0 12px var(--border-pink);
+      border-bottom: 2px dashed var(--border-cyan);
+      padding-bottom: 0.8rem;
       margin-top: 0;
-      font-size: 1.25rem;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 0.5rem;
-      color: var(--accent-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    .todo-input-group {
+
+    .input-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
     }
+
     input[type="text"], input[type="date"], select {
-      padding: 0.5rem 0.75rem;
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
+      background: #000;
+      border: 2px solid var(--border-cyan);
+      color: #fff;
+      padding: 0.7rem 1rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1.1rem;
+      outline: none;
+      box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.3);
       border-radius: 4px;
-      color: var(--text-color);
     }
-    input[type="text"] { flex: 1; min-width: 150px; }
-    button {
-      background-color: var(--accent-color);
-      color: #ffffff;
-      border: none;
-      padding: 0.5rem 1rem;
+
+    input[type="text"]:focus, select:focus, input[type="date"]:focus {
+      border-color: var(--border-pink);
+      box-shadow: 0 0 15px var(--border-pink);
+    }
+
+    input[type="text"] { flex: 1; min-width: 180px; }
+
+    /* Explosive Cyber Button */
+    .btn-laser {
+      background: linear-gradient(90deg, var(--border-pink), var(--neon-purple));
+      color: #fff;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 900;
+      border: 2px solid #fff;
+      padding: 0.7rem 1.5rem;
+      cursor: pointer;
+      border-radius: 4px;
+      text-shadow: 0 0 8px #fff;
+      box-shadow: 0 0 20px var(--border-pink);
+      transition: all 0.15s ease;
+    }
+
+    .btn-laser:hover {
+      transform: scale(1.08) rotate(-1deg);
+      background: linear-gradient(90deg, var(--neon-yellow), var(--border-cyan));
+      color: #000;
+      box-shadow: 0 0 35px var(--neon-yellow);
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 0.6rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: rgba(0,0,0,0.8);
+      border: 1px solid var(--border-cyan);
+      color: var(--border-cyan);
+      padding: 0.4rem 0.8rem;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .chip.active, .chip:hover {
+      background: var(--border-cyan);
+      color: #000;
+      box-shadow: 0 0 15px var(--border-cyan);
+    }
+
+    ul.task-list { list-style: none; padding: 0; margin: 0; }
+
+    li.task-card {
+      background: rgba(4, 8, 20, 0.9);
+      border: 2px solid var(--border-cyan);
+      border-left: 8px solid var(--border-pink);
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s;
+      box-shadow: 0 0 15px rgba(0,240,255,0.1);
+    }
+
+    li.task-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 25px var(--border-cyan);
+    }
+
+    li.task-card.completed {
+      border-left-color: var(--neon-green);
+      border-color: var(--neon-green);
+      opacity: 0.7;
+    }
+
+    li.task-card.completed .title {
+      text-decoration: line-through;
+      color: var(--neon-green);
+    }
+
+    .tag-priority {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-left: 0.6rem;
+      font-weight: 900;
+    }
+
+    .p-High { background: var(--border-pink); color: #fff; box-shadow: 0 0 10px var(--border-pink); }
+    .p-Medium { background: var(--neon-yellow); color: #000; box-shadow: 0 0 10px var(--neon-yellow); }
+    .p-Low { background: var(--border-cyan); color: #000; box-shadow: 0 0 10px var(--border-cyan); }
+
+    .btn-nuke {
+      background: transparent;
+      border: 1px solid var(--border-pink);
+      color: var(--border-pink);
+      padding: 0.4rem 0.8rem;
       border-radius: 4px;
       cursor: pointer;
       font-weight: bold;
     }
-    button:hover { opacity: 0.9; }
-    .secondary-btn {
-      background-color: #21262d;
-      color: var(--text-color);
-      border: 1px solid var(--border-color);
+
+    .btn-nuke:hover {
+      background: var(--border-pink);
+      color: #fff;
+      box-shadow: 0 0 15px var(--border-pink);
     }
-    .filter-group {
-      display: flex;
-      gap: 0.5rem;
+
+    #vis-canvas {
+      width: 100%;
+      height: 70px;
+      background: #000;
+      border: 2px solid var(--border-cyan);
+      box-shadow: inset 0 0 15px var(--border-cyan);
+      border-radius: 6px;
       margin-bottom: 1rem;
-      align-items: center;
     }
-    .filter-btn {
-      padding: 0.25rem 0.5rem;
-      font-size: 0.8rem;
-      background-color: #21262d;
-      border: 1px solid var(--border-color);
-      color: var(--text-color);
-    }
-    .filter-btn.active {
-      background-color: var(--accent-color);
-      color: white;
-    }
-    ul.todo-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    li.todo-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.75rem;
-      border-bottom: 1px solid var(--border-color);
-      background-color: var(--bg-color);
-      margin-bottom: 0.5rem;
-      border-radius: 4px;
-    }
-    li.todo-item.completed span.title {
-      text-decoration: line-through;
-      color: #8b949e;
-    }
-    .priority-badge {
-      font-size: 0.75rem;
-      padding: 0.1rem 0.4rem;
-      border-radius: 4px;
-      margin-left: 0.5rem;
-      font-weight: bold;
-    }
-    .priority-High { background-color: var(--danger-color); color: white; }
-    .priority-Medium { background-color: var(--warning-color); color: black; }
-    .priority-Low { background-color: #388bfd; color: white; }
-    .due-date { font-size: 0.75rem; color: #8b949e; margin-left: 0.5rem; }
-    .delete-btn {
-      background-color: var(--danger-color);
-      padding: 0.25rem 0.5rem;
-      font-size: 0.8rem;
-    }
-    #console-logs {
-      background-color: var(--bg-color);
-      border: 1px solid var(--border-color);
+
+    #console-box {
+      background: #000;
+      border: 2px solid var(--border-cyan);
       padding: 1rem;
-      border-radius: 4px;
-      height: 250px;
+      height: 220px;
       overflow-y: auto;
-      font-family: monospace;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.3);
     }
-    .log-entry { margin-bottom: 0.5rem; }
-    .log-entry.user { color: var(--accent-color); }
-    .log-entry.nova { color: #3fb950; }
+
+    .line-user { color: var(--border-cyan); text-shadow: 0 0 5px var(--border-cyan); }
+    .line-nova { color: var(--neon-green); text-shadow: 0 0 5px var(--neon-green); }
+    .line-sys { color: var(--neon-yellow); text-shadow: 0 0 5px var(--neon-yellow); }
   </style>
 </head>
 <body>
+  <div class="scanlines"></div>
+  <div id="screen-flash"></div>
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="fireworks-canvas"></canvas>
+
   <header>
-    <h1>NOVA 2.0 Dashboard</h1>
-    <span class="status-badge" id="agent-status">Online (Autonomous)</span>
+    <div class="glitch-title">⚡ NOVA 2.0 // OVERLORD</div>
+    <div class="hud-meters">
+      <div class="hud-box" id="hud-combo">💥 COMBO: x1</div>
+      <div class="hud-box" id="hud-score">🏆 OVERPOWER: 1,000</div>
+    </div>
   </header>
 
   <main>
-    <!-- Enhanced To-Do Application Section -->
-    <section class="card" id="todo-app">
-      <h2>Advanced To-Do Application</h2>
+    <!-- Ultra Cyber Task Matrix -->
+    <section class="cyber-card">
+      <h2>
+        <span>💥 TASK TERMINATOR</span>
+        <span style="color:var(--neon-yellow);" id="counter-display">0 ACTIVE</span>
+      </h2>
 
-      <div class="todo-input-group">
-        <input type="text" id="todo-input" placeholder="Add task title..." />
-        <select id="todo-priority">
-          <option value="Medium">Medium Priority</option>
-          <option value="High">High Priority</option>
-          <option value="Low">Low Priority</option>
+      <div class="input-row">
+        <input type="text" id="task-input" placeholder="INPUT CORE DIRECTIVE..." />
+        <select id="task-prio">
+          <option value="High">🔥 OVERKILL (HIGH)</option>
+          <option value="Medium" selected>⚡ TACTICAL (MED)</option>
+          <option value="Low">💧 ROUTINE (LOW)</option>
         </select>
-        <input type="date" id="todo-due" />
-        <button id="add-todo-btn">Add Task</button>
+        <input type="date" id="task-date" />
+        <button class="btn-laser" id="add-btn">EXECUTE</button>
       </div>
 
-      <div class="filter-group">
-        <span style="font-size:0.85rem;">Filters:</span>
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="active">Active</button>
-        <button class="filter-btn" data-filter="completed">Completed</button>
-        <button class="filter-btn" data-filter="high">High Priority</button>
-
-        <div style="margin-left: auto;">
-          <button class="secondary-btn" id="export-btn" style="font-size:0.75rem; padding:0.25rem 0.5rem;">Export JSON</button>
-        </div>
+      <div class="filter-bar">
+        <div class="chip active" data-f="all">ALL TASK</div>
+        <div class="chip" data-f="active">ACTIVE</div>
+        <div class="chip" data-f="done">COMPLETE</div>
+        <div class="chip" data-f="high">HIGH PRIORITY</div>
+        <button class="chip" id="export-json-btn" style="margin-left:auto; border-color:var(--border-pink);">DUMP JSON</button>
       </div>
 
-      <ul class="todo-list" id="todo-list"></ul>
+      <ul class="task-list" id="task-list"></ul>
     </section>
 
-    <!-- Agent Monitoring & Console Section -->
-    <section class="card" id="agent-console">
-      <h2>Real-Time Agent Monitoring</h2>
-      <div class="todo-input-group">
-        <input type="text" id="agent-input" placeholder="Ask NOVA something..." />
-        <button id="send-agent-btn">Send</button>
+    <!-- Agent Visualizer & Tactical Console -->
+    <section class="cyber-card">
+      <h2><span>📡 QUANTUM MONITOR</span></h2>
+      <canvas id="vis-canvas"></canvas>
+      <div class="input-row">
+        <input type="text" id="cmd-input" placeholder="TRANSMIT TO NOVA MIND..." />
+        <button class="btn-laser" id="send-cmd-btn">TRANSMIT</button>
       </div>
-      <div id="console-logs">
-        <div class="log-entry nova">[NOVA System]: Agent monitor initialized. Ready for queries.</div>
+      <div id="console-box">
+        <div class="line-sys">[SYSTEM]: Quantum neural bridge operational. Awaiting command parameters.</div>
       </div>
     </section>
   </main>
 
   <script>
-    const todoInput = document.getElementById('todo-input');
-    const todoPriority = document.getElementById('todo-priority');
-    const todoDue = document.getElementById('todo-due');
-    const addTodoBtn = document.getElementById('add-todo-btn');
-    const todoList = document.getElementById('todo-list');
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    const exportBtn = document.getElementById('export-btn');
+    // Audio Synthesizer Engine
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let actx = null;
 
-    let localTasks = JSON.parse(localStorage.getItem('nova_tasks') || '[]');
-    let currentFilter = 'all';
+    function soundFX(type) {
+      try {
+        if (!actx) actx = new AudioCtx();
+        const osc = actx.createOscillator();
+        const g = actx.createGain();
+        osc.connect(g);
+        g.connect(actx.destination);
 
-    function saveTasks() {
-      localStorage.setItem('nova_tasks', JSON.stringify(localTasks));
+        if (type === 'add') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(400, actx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(1200, actx.currentTime + 0.15);
+          g.gain.setValueAtTime(0.15, actx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.15);
+          osc.start(); osc.stop(actx.currentTime + 0.15);
+        } else if (type === 'boom') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(800, actx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(200, actx.currentTime + 0.35);
+          g.gain.setValueAtTime(0.25, actx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.35);
+          osc.start(); osc.stop(actx.currentTime + 0.35);
+        } else if (type === 'delete') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(300, actx.currentTime);
+          osc.frequency.linearRampToValueAtTime(80, actx.currentTime + 0.2);
+          g.gain.setValueAtTime(0.2, actx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, actx.currentTime + 0.2);
+          osc.start(); osc.stop(actx.currentTime + 0.2);
+        }
+      } catch (e) {}
     }
 
-    function renderTasks() {
-      todoList.innerHTML = '';
+    // Flash Screen Effect
+    function triggerFlash() {
+      const flash = document.getElementById('screen-flash');
+      flash.style.opacity = '1';
+      setTimeout(() => { flash.style.opacity = '0'; }, 80);
+    }
 
-      let filtered = localTasks.filter(task => {
-        if (currentFilter === 'active') return !task.completed;
-        if (currentFilter === 'completed') return task.completed;
-        if (currentFilter === 'high') return task.priority === 'High';
+    // Particle Fireworks Physics Canvas
+    const fwCanvas = document.getElementById('fireworks-canvas');
+    const fwCtx = fwCanvas.getContext('2d');
+    let fwParticles = [];
+
+    function resizeFW() {
+      fwCanvas.width = window.innerWidth;
+      fwCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeFW);
+    resizeFW();
+
+    function spawnFireworks(x, y) {
+      for (let i = 0; i < 80; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 12 + 2;
+        fwParticles.push({
+          x: x, y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          alpha: 1,
+          color: ['#00f0ff', '#ff0055', '#ffe600', '#00ff66'][Math.floor(Math.random() * 4)]
+        });
+      }
+    }
+
+    function renderFireworks() {
+      fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+      for (let i = fwParticles.length - 1; i >= 0; i--) {
+        let p = fwParticles[i];
+        p.x += p.vx; p.y += p.vy;
+        p.alpha -= 0.02;
+        fwCtx.globalAlpha = Math.max(0, p.alpha);
+        fwCtx.beginPath();
+        fwCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        fwCtx.fillStyle = p.color;
+        fwCtx.fill();
+        if (p.alpha <= 0) fwParticles.splice(i, 1);
+      }
+      fwCtx.globalAlpha = 1;
+      requestAnimationFrame(renderFireworks);
+    }
+    renderFireworks();
+
+    // Background Matrix Plasma Grid
+    const bgCanvas = document.getElementById('bg-canvas');
+    const bgCtx = bgCanvas.getContext('2d');
+    let gridOffset = 0;
+
+    function renderPlasma() {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+      bgCtx.fillStyle = '#020208';
+      bgCtx.fillRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+      bgCtx.strokeStyle = 'rgba(0, 240, 255, 0.12)';
+      bgCtx.lineWidth = 1;
+
+      const size = 40;
+      for (let x = 0; x < bgCanvas.width; x += size) {
+        bgCtx.beginPath(); bgCtx.moveTo(x, 0); bgCtx.lineTo(x, bgCanvas.height); bgCtx.stroke();
+      }
+      for (let y = gridOffset % size; y < bgCanvas.height; y += size) {
+        bgCtx.beginPath(); bgCtx.moveTo(0, y); bgCtx.lineTo(bgCanvas.width, y); bgCtx.stroke();
+      }
+      gridOffset += 0.5;
+      requestAnimationFrame(renderPlasma);
+    }
+    renderPlasma();
+
+    // Wave Visualizer
+    const visCanvas = document.getElementById('vis-canvas');
+    const visCtx = visCanvas.getContext('2d');
+    let vStep = 0;
+
+    function renderWave() {
+      visCanvas.width = visCanvas.offsetWidth;
+      visCanvas.height = visCanvas.offsetHeight;
+      visCtx.clearRect(0, 0, visCanvas.width, visCanvas.height);
+
+      visCtx.beginPath();
+      visCtx.lineWidth = 3;
+      visCtx.strokeStyle = '#ff0055';
+
+      for (let x = 0; x < visCanvas.width; x += 2) {
+        const y = visCanvas.height / 2 + Math.sin(x * 0.08 + vStep) * 18 * Math.sin(x * 0.02);
+        if (x === 0) visCtx.moveTo(x, y); else visCtx.lineTo(x, y);
+      }
+      visCtx.stroke();
+      vStep += 0.12;
+      requestAnimationFrame(renderWave);
+    }
+    renderWave();
+
+    // Main App Logic & Task Matrix
+    const taskInput = document.getElementById('task-input');
+    const taskPrio = document.getElementById('task-prio');
+    const taskDate = document.getElementById('task-date');
+    const addBtn = document.getElementById('add-btn');
+    const taskList = document.getElementById('task-list');
+    const chips = document.querySelectorAll('.chip');
+    const counterDisplay = document.getElementById('counter-display');
+    const hudCombo = document.getElementById('hud-combo');
+    const hudScore = document.getElementById('hud-score');
+
+    let tasks = JSON.parse(localStorage.getItem('nova_overkill_tasks') || '[]');
+    let combo = 1;
+    let score = parseInt(localStorage.getItem('nova_score') || '1000');
+    let currentFilter = 'all';
+
+    function updateScore() {
+      hudCombo.textContent = `💥 COMBO: x${combo}`;
+      hudScore.textContent = `🏆 OVERPOWER: ${score.toLocaleString()}`;
+      localStorage.setItem('nova_score', score.toString());
+    }
+
+    function save() {
+      localStorage.setItem('nova_overkill_tasks', JSON.stringify(tasks));
+    }
+
+    function render() {
+      taskList.innerHTML = '';
+      let filtered = tasks.filter(t => {
+        if (currentFilter === 'active') return !t.completed;
+        if (currentFilter === 'done') return t.completed;
+        if (currentFilter === 'high') return t.priority === 'High';
         return true;
       });
 
+      counterDisplay.textContent = `${filtered.length} ACTIVE`;
+
       if (filtered.length === 0) {
-        todoList.innerHTML = '<li class="todo-item"><span style="color:#8b949e">No tasks match filter.</span></li>';
+        taskList.innerHTML = '<li class="task-card"><span style="color:#8b949e">GRID CLEAR. NO DIRECTIVES PENDING.</span></li>';
         return;
       }
 
-      filtered.forEach((task) => {
-        const index = localTasks.indexOf(task);
+      filtered.forEach(t => {
+        const idx = tasks.indexOf(t);
         const li = document.createElement('li');
-        li.className = `todo-item ${task.completed ? 'completed' : ''}`;
+        li.className = `task-card ${t.completed ? 'completed' : ''}`;
 
-        const detailsDiv = document.createElement('div');
-        detailsDiv.style.cursor = 'pointer';
-        detailsDiv.onclick = () => toggleTask(index);
+        const div = document.createElement('div');
+        div.style.cursor = 'pointer';
+        div.onclick = (e) => toggle(idx, e);
 
-        const titleSpan = document.createElement('span');
-        titleSpan.className = 'title';
-        titleSpan.textContent = task.title;
+        const title = document.createElement('span');
+        title.className = 'title';
+        title.textContent = t.title;
 
-        const prioritySpan = document.createElement('span');
-        prioritySpan.className = `priority-badge priority-${task.priority || 'Medium'}`;
-        prioritySpan.textContent = task.priority || 'Medium';
+        const prio = document.createElement('span');
+        prio.className = `tag-priority p-${t.priority}`;
+        prio.textContent = t.priority;
 
-        detailsDiv.appendChild(titleSpan);
-        detailsDiv.appendChild(prioritySpan);
+        div.appendChild(title);
+        div.appendChild(prio);
 
-        if (task.due_date) {
-          const dueSpan = document.createElement('span');
-          dueSpan.className = 'due-date';
-          dueSpan.textContent = `Due: ${task.due_date}`;
-          detailsDiv.appendChild(dueSpan);
+        if (t.due_date) {
+          const due = document.createElement('span');
+          due.style.fontSize = '0.8rem';
+          due.style.color = '#8b949e';
+          due.style.marginLeft = '0.8rem';
+          due.textContent = `📅 ${t.due_date}`;
+          div.appendChild(due);
         }
 
-        const delBtn = document.createElement('button');
-        delBtn.className = 'delete-btn';
-        delBtn.textContent = 'Delete';
-        delBtn.onclick = (e) => {
-          e.stopPropagation();
-          deleteTask(index);
-        };
+        const del = document.createElement('button');
+        del.className = 'btn-nuke';
+        del.textContent = 'NUKE ✖';
+        del.onclick = (e) => { e.stopPropagation(); remove(idx); };
 
-        li.appendChild(detailsDiv);
-        li.appendChild(delBtn);
-        todoList.appendChild(li);
+        li.appendChild(div);
+        li.appendChild(del);
+        taskList.appendChild(li);
       });
+
+      updateScore();
     }
 
-    function addTask() {
-      const text = todoInput.value.trim();
+    function add() {
+      const val = taskInput.value.trim();
+      if (!val) return;
+      tasks.push({ id: Date.now(), title: val, priority: taskPrio.value, due_date: taskDate.value || null, completed: false });
+      soundFX('add');
+      save();
+      render();
+      taskInput.value = '';
+    }
+
+    function toggle(idx, e) {
+      tasks[idx].completed = !tasks[idx].completed;
+      if (tasks[idx].completed) {
+        score += 250 * combo;
+        combo += 1;
+        soundFX('boom');
+        triggerFlash();
+        spawnFireworks(e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
+      } else {
+        combo = 1;
+      }
+      save();
+      render();
+    }
+
+    function remove(idx) {
+      soundFX('delete');
+      tasks.splice(idx, 1);
+      save();
+      render();
+    }
+
+    addBtn.addEventListener('click', add);
+    taskInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') add(); });
+
+    chips.forEach(c => {
+      c.addEventListener('click', () => {
+        if (c.id === 'export-json-btn') {
+          const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks, null, 2));
+          const a = document.createElement('a'); a.href = str; a.download = "nova_tasks_overkill.json"; a.click();
+          return;
+        }
+        chips.forEach(x => x.classList.remove('active'));
+        c.classList.add('active');
+        currentFilter = c.getAttribute('data-f');
+        render();
+      });
+    });
+
+    render();
+
+    // Agent Messaging
+    const cmdInput = document.getElementById('cmd-input');
+    const sendCmdBtn = document.getElementById('send-cmd-btn');
+    const consoleBox = document.getElementById('console-box');
+
+    function log(r, msg) {
+      const d = document.createElement('div');
+      d.className = `line-${r.toLowerCase()}`;
+      d.textContent = `[${r}]: ${msg}`;
+      consoleBox.appendChild(d);
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
+
+    async function send() {
+      const text = cmdInput.value.trim();
       if (!text) return;
-      localTasks.push({
-        id: Date.now(),
-        title: text,
-        priority: todoPriority.value,
-        due_date: todoDue.value || null,
-        completed: false
-      });
-      saveTasks();
-      renderTasks();
-      todoInput.value = '';
-      todoDue.value = '';
-    }
-
-    function toggleTask(index) {
-      localTasks[index].completed = !localTasks[index].completed;
-      saveTasks();
-      renderTasks();
-    }
-
-    function deleteTask(index) {
-      localTasks.splice(index, 1);
-      saveTasks();
-      renderTasks();
-    }
-
-    addTodoBtn.addEventListener('click', addTask);
-    todoInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') addTask();
-    });
-
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.getAttribute('data-filter');
-        renderTasks();
-      });
-    });
-
-    exportBtn.addEventListener('click', () => {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localTasks, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", "nova_tasks_backup.json");
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-    });
-
-    renderTasks();
-
-    // Agent Monitoring interaction logic
-    const agentInput = document.getElementById('agent-input');
-    const sendAgentBtn = document.getElementById('send-agent-btn');
-    const consoleLogs = document.getElementById('console-logs');
-
-    function appendLog(role, message) {
-      const div = document.createElement('div');
-      div.className = `log-entry ${role.toLowerCase()}`;
-      div.textContent = `[${role}]: ${message}`;
-      consoleLogs.appendChild(div);
-      consoleLogs.scrollTop = consoleLogs.scrollHeight;
-    }
-
-    async function sendQuery() {
-      const query = agentInput.value.trim();
-      if (!query) return;
-
-      appendLog('User', query);
-      agentInput.value = '';
+      soundFX('add');
+      log('User', text);
+      cmdInput.value = '';
 
       try {
-        const res = await fetch('/api/query', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: query })
-        });
+        const res = await fetch('/api/query', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: text }) });
         const data = await res.json();
-        appendLog('NOVA', data.response);
-      } catch (err) {
-        appendLog('NOVA System', 'Processed locally');
-        appendLog('NOVA', `Processed query: "${query}"`);
+        log('NOVA', data.response);
+        soundFX('boom');
+      } catch (e) {
+        log('NOVA', `COMMAND PROCESSED LOCALLY: "${text}"`);
       }
     }
 
-    sendAgentBtn.addEventListener('click', sendQuery);
-    agentInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') sendQuery();
-    });
+    sendCmdBtn.addEventListener('click', send);
+    cmdInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
   </script>
 </body>
 </html>
