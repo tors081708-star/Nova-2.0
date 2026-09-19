@@ -34,9 +34,11 @@ class TestNovaModules(unittest.TestCase):
         with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as f:
             path = f.name
         mind = NovaMind(storage_path=path)
-        task = mind.add_task("Buy milk")
+        task = mind.add_task("Buy milk", priority="High", due_date="2026-12-31")
         self.assertEqual(len(mind.get_all_tasks()), 1)
         self.assertEqual(task.title, "Buy milk")
+        self.assertEqual(task.priority, "High")
+        self.assertEqual(task.due_date, "2026-12-31")
 
         toggled = mind.toggle_task(task.id)
         self.assertTrue(toggled.completed)

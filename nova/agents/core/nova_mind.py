@@ -20,11 +20,15 @@ class TaskItem:
       completed: bool = False,
       task_id: str = None,
       category: str = "general",
+      priority: str = "Medium",
+      due_date: Optional[str] = None,
   ):
     self.id = task_id or str(uuid.uuid4())
     self.title = title
     self.completed = completed
     self.category = category
+    self.priority = priority
+    self.due_date = due_date
 
   def to_dict(self) -> Dict[str, Any]:
     return {
@@ -32,6 +36,8 @@ class TaskItem:
         "title": self.title,
         "completed": self.completed,
         "category": self.category,
+        "priority": self.priority,
+        "due_date": self.due_date,
     }
 
 
@@ -51,7 +57,17 @@ class NovaMind:
       try:
         with open(self.storage_path, "r", encoding="utf-8") as f:
           data = json.load(f)
-          self.tasks = [TaskItem(**item) for item in data]
+          self.tasks = [
+              TaskItem(
+                  title=item.get("title", ""),
+                  completed=item.get("completed", False),
+                  task_id=item.get("id"),
+                  category=item.get("category", "general"),
+                  priority=item.get("priority", "Medium"),
+                  due_date=item.get("due_date"),
+              )
+              for item in data
+          ]
       except Exception:
         self.tasks = []
 
@@ -62,8 +78,16 @@ class NovaMind:
     with open(self.storage_path, "w", encoding="utf-8") as f:
       json.dump([t.to_dict() for t in self.tasks], f, indent=2)
 
-  def add_task(self, title: str, category: str = "general") -> TaskItem:
-    task = TaskItem(title=title, category=category)
+  def add_task(
+      self,
+      title: str,
+      category: str = "general",
+      priority: str = "Medium",
+      due_date: Optional[str] = None,
+  ) -> TaskItem:
+    task = TaskItem(
+        title=title, category=category, priority=priority, due_date=due_date
+    )
     self.tasks.append(task)
     self._save_tasks()
     return task
@@ -93,7 +117,6 @@ class NovaMind:
 
     user_input_lower = user_input.lower().strip()
 
-    # Simple intent parsing for to-do items
     if user_input_lower.startswith("add todo ") or user_input_lower.startswith(
         "add task "
     ):
@@ -102,13 +125,18 @@ class NovaMind:
           if user_input_lower.startswith("add todo ")
           else user_input[9:].strip()
       )
-      task = self.add_task(task_title)
-      response_text = f"Added task: '{task.title}' (ID: {task.id})"
+      priority = "High" if "urgent" in user_input_lower else "Medium"
+      task = self.add_task(task_title, priority=priority)
+      response_text = (
+          f"Added task: '{task.title}' [{task.priority} Priority] (ID:"
+          f" {task.id[:8]})"
+      )
       action = "add_task"
     elif user_input_lower in ["list todo", "list tasks", "show todos", "show tasks"]:
       tasks_str = "\n".join(
           [
-              f"[{'X' if t.completed else ' '}] {t.id[:8]}: {t.title}"
+              f"[{'X' if t.completed else ' '}] [{t.priority}] {t.id[:8]}:"
+              f" {t.title}"
               for t in self.tasks
           ]
       )
